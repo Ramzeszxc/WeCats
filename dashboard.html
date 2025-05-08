@@ -56,9 +56,7 @@
                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input id="search" name="search" x-model="searchQuery" @keyup.enter="searchResults = ['User 1', 'User 2', 'Post about cats']" 
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" 
-                                placeholder="Search users or posts" type="search">
+                            <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" placeholder="Search users or posts" type="search">
                         </div>
                         
                         <!-- Search Results Dropdown -->
@@ -418,7 +416,7 @@
                     }
             
                     document.getElementById('posts-feed').innerHTML = posts.map(post => `
-                    <div class="bg-white shadow rounded-lg p-5 group relative">
+                    <div class="bg-white shadow rounded-lg p-5 group relative" id="post-${post.id}">
                         <div class="flex items-center">
                             <img class="h-10 w-10 rounded-full" src="${post.profiles?.profile_picture_url || 'https://placehold.co/40x40'}" alt="${post.profiles?.nickname || 'User'}">
                             <div class="ml-3">
@@ -561,6 +559,78 @@
             }
             
             main();
+
+            // --- SEARCH FEATURE ---
+const searchInput = document.getElementById('search');
+const searchResultsDropdown = searchInput
+  ? searchInput.closest('div.relative').querySelector('[x-show]')
+  : null;
+
+let searchTimeout = null;
+
+if (searchInput && searchResultsDropdown) {
+  searchInput.addEventListener('input', function () {
+    const query = searchInput.value.trim();
+    clearTimeout(searchTimeout);
+    if (query.length === 0) {
+      searchResultsDropdown.innerHTML = `
+        <div class="px-4 py-2 text-sm text-gray-500">Press Enter to search...</div>
+      `;
+      return;
+    }
+    // Debounce search
+    searchTimeout = setTimeout(() => doSearch(query), 300);
+  });
+
+  async function doSearch(query) {
+    // Search users (profiles)
+    const { data: users, error: userError } = await supabase
+      .from('profiles')
+      .select('id, nickname, profile_picture_url')
+      .ilike('nickname', `%${query}%`);
+
+    // Search posts
+    const { data: posts, error: postError } = await supabase
+      .from('posts')
+      .select('id, content')
+      .ilike('content', `%${query}%`);
+
+    let resultsHtml = '';
+
+    if ((users && users.length > 0) || (posts && posts.length > 0)) {
+      if (users && users.length > 0) {
+        resultsHtml += `<div class="px-4 py-2 text-xs text-gray-400">Users</div>`;
+        resultsHtml += users
+          .map(
+            (u) => `
+            <a href="profile.html?user=${u.id}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+              <img src="${u.profile_picture_url || 'https://placehold.co/32x32'}" class="h-6 w-6 rounded-full mr-2" alt="">
+              ${u.nickname}
+            </a>
+          `
+          )
+          .join('');
+      }
+      if (posts && posts.length > 0) {
+        resultsHtml += `<div class="px-4 py-2 text-xs text-gray-400">Posts</div>`;
+        resultsHtml += posts
+          .map(
+            (p) => `
+            <a href="#post-${p.id}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              ${p.content.length > 50 ? p.content.slice(0, 50) + '...' : p.content}
+            </a>
+          `
+          )
+          .join('');
+      }
+    } else {
+      resultsHtml = `<div class="px-4 py-2 text-sm text-gray-500">No results found.</div>`;
+    }
+
+    searchResultsDropdown.innerHTML = resultsHtml;
+  }
+}
+
             </script>
     </body>
     </html>
