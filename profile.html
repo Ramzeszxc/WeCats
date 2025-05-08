@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeCats - Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        .cat-bg {
+            background-image: url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <div class="flex items-center space-x-4">
+                    <a href="dashboard.html" class="flex items-center">
+                        <img src="/api/placeholder/40/40" alt="WeCats Logo" class="h-10 w-10 rounded-full">
+                        <span class="text-white text-2xl font-bold ml-2">WeCats</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="dashboard.html" class="py-2 px-3 text-white hover:bg-blue-700 rounded-md transition">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="#" class="py-2 px-3 text-white hover:bg-blue-700 rounded-md transition">
+                        <i class="fas fa-bell mr-1"></i> Notifications
+                    </a>
+                    <a href="#" class="py-2 px-3 text-white hover:bg-blue-700 rounded-md transition">
+                        <i class="fas fa-envelope mr-1"></i> Messages
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search WeCats..." 
+                            class="bg-blue-700 rounded-full py-2 px-4 pl-10 text-white placeholder-blue-200 
+                            focus:outline-none focus:ring-2 focus:ring-white w-40 md:w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-blue-200"></i>
+                    </div>
+                    
+                    <div class="flex items-center" x-data="{ open: false }">
+                        <img src="/api/placeholder/40/40" alt="Profile" 
+                            class="h-8 w-8 rounded-full cursor-pointer border-2 border-white" 
+                            @click="open = !open">
+                            
+                        <div x-show="open" 
+                            @click.away="open = false"
+                            class="absolute right-4 mt-32 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                                <i class="fas fa-user mr-2"></i> Your Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                                <i class="fas fa-cog mr-2"></i> Settings
+                            </a>
+                            <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto mt-6 px-4">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Edit Profile</h1>
+                <a href="profile.html" class="text-blue-600 hover:text-blue-800">
+                    <i class="fas fa-arrow-left mr-1"></i> Back to Profile
+                </a>
+            </div>
+
+            <form id="edit-profile-form" class="space-y-6">
+                <!-- Profile Picture Section -->
+                <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="flex-shrink-0">
+                        <div class="relative group">
+                            <img src="/api/placeholder/150/150" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-blue-500">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer">
+                                <label for="profile-pic" class="text-white cursor-pointer">
+                                    <i class="fas fa-camera text-xl"></i>
+                                    <span class="block text-sm mt-1">Change</span>
+                                </label>
+                            </div>
+                            <input type="file" id="profile-pic" name="profile-pic" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="flex-grow">
+                        <h2 class="text-xl font-semibold text-gray-700">Profile Picture</h2>
+                        <p class="text-gray-500 text-sm mt-1">Upload a new profile picture. JPG, PNG or GIF. Max 5MB.</p>
+                        <div class="mt-3 flex space-x-3">
+                            <button type="button" id="upload-trigger" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                Upload New
+                            </button>
+                            <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Personal Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="nickname" class="block text-sm font-medium text-gray-700 mb-1">Nickname</label>
+                        <input type="text" id="nickname" name="nickname" value="CatLover123" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address (Cannot be changed)</label>
+                        <input type="email" id="email" name="email" value="student@g.msuiit.edu.ph" 
+                            class="w-full px-4 py-2 border border-gray-200 rounded-md bg-gray-100" disabled>
+                    </div>
+                    
+                    <div>
+                        <label for="id-number" class="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
+                        <input type="text" id="id-number" name="id-number" value="2023-2700" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="program" class="block text-sm font-medium text-gray-700 mb-1">Year and Program</label>
+                        <input type="text" id="program" name="program" value="3rd Year - Computer Science" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <select id="gender" name="gender" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="male">Male</option>
+                            <option value="female" selected>Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                        <textarea id="bio" name="bio" rows="3" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">CS Student at MSU-IIT. Cat lover and coffee enthusiast. 🐱☕</textarea>
+                    </div>
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Password Change -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Change Password</h3>
+                    <p class="text-gray-500 text-sm">Leave blank if you don't want to change your password</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                            <input type="password" id="current-password" name="current-password" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div></div>
+                        
+                        <div>
+                            <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="new-password" name="new-password" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="confirm-password" name="confirm-password" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Save Button -->
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-btn" class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-md hover:bg-gray-300 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-12 py-6 border-t">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center">
+                        <img src="/api/placeholder/40/40" alt="WeCats Logo" class="h-8 w-8 rounded-full">
+                        <span class="text-gray-800 text-xl font-bold ml-2">WeCats</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-1">© 2025 WeCats. All rights reserved.</p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">About</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Privacy Policy</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Terms of Service</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 transition">Help Center</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Connect upload button to hidden file input
+        document.getElementById('upload-trigger').addEventListener('click', function() {
+            document.getElementById('profile-pic').click();
+        });
+
+        // Preview uploaded image
+        document.getElementById('profile-pic').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Find the profile image and update its src
+                    const profileImg = document.querySelector('.w-32.h-32.rounded-full');
+                    profileImg.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('New password and confirmation do not match!');
+                return;
+            }
+            
+            // Show success message
+            alert('Profile updated successfully!');
+            
+            // Redirect to profile page
+            window.location.href = 'profile.html';
+        });
+
+        // Cancel button
+        document.getElementById('cancel-btn').addEventListener('click', function() {
+            window.location.href = 'profile.html';
+        });
+    </script>
+</body>
+</html>

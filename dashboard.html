@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeCats Dashboard - MSU-IIT Student Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4a6fa5',
+                        secondary: '#ff9d00',
+                        catdark: '#2c3e50',
+                        catlight: '#f8f9fa',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans" x-data="{ showPostOptions: null, showReplyInput: null, searchQuery: '', searchResults: [] }">
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Left side - Logo and Profile -->
+                <div class="flex items-center">
+                    <a href="dashboard.html" class="flex-shrink-0 flex items-center">
+                        <img id="header-profile-pic" class="h-10 w-10 rounded-full" src="" alt="WeCats Logo">
+
+                        <span class="ml-2 text-xl font-bold text-primary">WeCats</span>
+                    </a>
+                    <!-- Profile Section -->
+                    <div class="ml-6 flex items-center">
+                        <div class="flex items-center">
+                            <img id="header-user-pic" class="h-8 w-8 rounded-full" src="" alt="User Profile">
+                            <span id="header-user-name" class="ml-2 text-sm font-medium text-gray-700"></span>
+                        </div>
+                        <div class="ml-4">
+                            <a href="profile.html" class="text-sm font-medium text-primary hover:text-opacity-80">
+                                Update Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Middle - Search Bar -->
+                <div class="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
+                    <div class="max-w-lg w-full lg:max-w-xs relative">
+                        <label for="search" class="sr-only">Search</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input id="search" name="search" x-model="searchQuery" @keyup.enter="searchResults = ['User 1', 'User 2', 'Post about cats']" 
+                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" 
+                                placeholder="Search users or posts" type="search">
+                        </div>
+                        
+                        <!-- Search Results Dropdown -->
+                        <div x-show="searchQuery.length > 0" @click.away="searchQuery = ''; searchResults = []" 
+                            class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto max-h-60">
+                            <div x-show="searchResults.length === 0 && searchQuery.length > 0" class="px-4 py-2 text-sm text-gray-500">
+                                Press Enter to search...
+                            </div>
+                            <template x-for="(item, index) in searchResults" :key="index">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" x-text="item"></a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-0">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column - User Info -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white shadow rounded-lg mb-6">
+                        <div class="p-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-16 w-16">
+                                    <img id="sidebar-profile-pic" class="h-16 w-16 rounded-full" src="/api/placeholder/80x80" alt="Profile Picture">
+                                </div>
+                                <div class="ml-4">
+                                    <h2 id="sidebar-user-name" class="text-lg font-medium text-gray-900"></h2>
+                                    <p id="sidebar-user-nickname" class="text-sm text-gray-500"></p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <p id="sidebar-user-year" class="text-gray-600 text-sm"></p>
+                                <p id="sidebar-user-id" class="text-gray-600 text-sm"></p>
+                                <p id="sidebar-user-gender" class="text-gray-600 text-sm"></p>
+                            </div>
+                            <div class="mt-6 flex space-x-2">
+                                <a href="profile.html" class="flex-1 bg-primary text-white text-center py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors">
+                                    My Profile
+                                </a>
+                                <a href="#" id="logout-btn" class="flex-1 bg-gray-200 text-gray-700 text-center py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements Box -->
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <div class="bg-primary px-4 py-3">
+                            <h3 class="text-lg font-medium text-white">Announcements</h3>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-4">
+                                <div class="border-b pb-4">
+                                    <h4 class="font-medium text-gray-900">CCC151</h4>
+                                    <p class="text-sm text-gray-600 mt-1">Database</p>
+                                    <p class="text-xs text-gray-500 mt-2">Let's Go!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Middle and Right Columns - Posts and Feed -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Create Post Box -->
+                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                        <div class="p-4 border-b">
+                            <h3 class="text-lg font-medium text-gray-900">Share Your Thoughts</h>
+                            </div>
+                            <div class="p-4">
+                                <form id="create-post-form">
+                                    <div class="mb-4">
+                                        <textarea rows="3" placeholder="What's on your mind today?" 
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"></textarea>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                        </div>
+                                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                            Post
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div id="posts-feed" class="space-y-6"></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+        <footer class="bg-white shadow-inner mt-8">
+            <div class="max-w-6xl mx-auto px-4 py-6 md:flex md:items-center md:justify-between">
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-500">
+                        &copy; 2025 WeCats. All rights reserved.
+                    </p>
+                </div>
+                <div class="flex justify-center space-x-6 md:order-2">
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Facebook</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Instagram</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Twitter</span>
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    
+        <script type="module">
+            import { supabase } from './supabase.js';
+            
+            // Helper to show a modal for profile completion
+            function showProfileModal(onSubmit) {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+                modal.innerHTML = `
+                  <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+                    <h2 class="text-xl font-bold mb-4">Complete Your Profile</h2>
+                    <form id="profile-modal-form" class="space-y-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">Nickname</label>
+                        <input type="text" id="modal-nickname" class="w-full border border-gray-300 rounded-md px-3 py-2" required>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">ID Number</label>
+                        <input type="text" id="modal-id-number" class="w-full border border-gray-300 rounded-md px-3 py-2" required placeholder="e.g., 2023-2700">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">Year and Program</label>
+                        <input type="text" id="modal-year-program" class="w-full border border-gray-300 rounded-md px-3 py-2" required placeholder="e.g., 2nd Year - BS Computer Science">
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">Gender</label>
+                        <select id="modal-gender" class="w-full border border-gray-300 rounded-md px-3 py-2" required>
+                          <option value="">Select</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700">Profile Picture</label>
+                        <input type="file" id="modal-profile-picture" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2" required>
+                      </div>
+                      <div class="flex justify-end space-x-2">
+                        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                `;
+                document.body.appendChild(modal);
+            
+                document.getElementById('profile-modal-form').onsubmit = async function(e) {
+                    e.preventDefault();
+                    const nickname = document.getElementById('modal-nickname').value.trim();
+                    const id_number = document.getElementById('modal-id-number').value.trim();
+                    const year_program = document.getElementById('modal-year-program').value.trim();
+                    const gender = document.getElementById('modal-gender').value;
+                    const fileInput = document.getElementById('modal-profile-picture');
+                    const file = fileInput.files[0];
+            
+                    if (!file) {
+                        alert('Please select a profile picture.');
+                        return;
+                    }
+            
+                    // Upload to Supabase Storage
+                    const fileExt = file.name.split('.').pop();
+                    const filePath = `profile-pictures/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    let { error: uploadError } = await supabase.storage
+                        .from('profile-pictures')
+                        .upload(filePath, file);
+            
+                    if (uploadError) {
+                        alert('Failed to upload profile picture: ' + uploadError.message);
+                        return;
+                    }
+            
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase
+                        .storage
+                        .from('profile-pictures')
+                        .getPublicUrl(filePath);
+            
+                    await onSubmit({ nickname, id_number, year_program, gender, profile_picture_url: publicUrl });
+                    document.body.removeChild(modal);
+                };
+            }
+            
+            // Edit Post Modal
+            function showEditPostModal(initialContent, onSave) {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+                modal.innerHTML = `
+                  <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+                    <h2 class="text-xl font-bold mb-4">Edit Post</h2>
+                    <form id="edit-post-form" class="space-y-4">
+                      <div>
+                        <textarea id="edit-post-content" class="w-full border border-gray-300 rounded-md px-3 py-2" rows="4" required>${initialContent}</textarea>
+                      </div>
+                      <div class="flex justify-end space-x-2">
+                        <button type="button" id="cancel-edit-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md">Cancel</button>
+                        <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md">Save</button>
+                      </div>
+                    </form>
+                  </div>
+                `;
+                document.body.appendChild(modal);
+            
+                document.getElementById('cancel-edit-btn').onclick = () => document.body.removeChild(modal);
+            
+                document.getElementById('edit-post-form').onsubmit = async function(e) {
+                    e.preventDefault();
+                    const newContent = document.getElementById('edit-post-content').value.trim();
+                    await onSave(newContent);
+                    document.body.removeChild(modal);
+                };
+            }
+            
+            // Fetch replies for a post
+            async function fetchReplies(postId) {
+                const { data: replies, error } = await supabase
+                    .from('replies')
+                    .select(`
+                        id, content, created_at, user_id,
+                        profiles (
+                            nickname, profile_picture_url
+                        )
+                    `)
+                    .eq('post_id', postId)
+                    .order('created_at', { ascending: true });
+                return replies || [];
+            }
+            
+            async function main() {
+                // Session check
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                const user = session.user;
+            
+                // Fetch profile
+                let { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+            
+                // Profile completeness check
+                function isProfileIncomplete(profile) {
+                    return (
+                        !profile ||
+                        !profile.nickname ||
+                        !profile.id_number ||
+                        !profile.year_program ||
+                        !profile.gender ||
+                        !profile.profile_picture_url
+                    );
+                }
+                if (isProfileIncomplete(profile)) {
+                    showProfileModal(async ({ nickname, id_number, year_program, gender, profile_picture_url }) => {
+                        if (!profile) {
+                            const { error: insertError } = await supabase.from('profiles').insert([{
+                                id: user.id,
+                                nickname,
+                                id_number,
+                                year_program,
+                                gender,
+                                profile_picture_url
+                            }]);
+                            if (insertError) {
+                                alert('Profile creation failed: ' + insertError.message);
+                                window.location.href = 'index.html';
+                                return;
+                            }
+                        } else {
+                            const { error: updateError } = await supabase.from('profiles').update({
+                                nickname,
+                                id_number,
+                                year_program,
+                                gender,
+                                profile_picture_url
+                            }).eq('id', user.id);
+                            if (updateError) {
+                                alert('Profile update failed: ' + updateError.message);
+                                window.location.href = 'index.html';
+                                return;
+                            }
+                        }
+                        alert('Profile saved!');
+                        window.location.reload();
+                    });
+                    return;
+                }
+            
+                // Render user info
+                document.getElementById('header-profile-pic').src = profile.profile_picture_url || 'https://placehold.co/40x40';
+                document.getElementById('header-user-pic').src = profile.profile_picture_url || 'https://placehold.co/40x40';
+                document.getElementById('header-user-name').textContent = profile.nickname;
+                document.getElementById('sidebar-profile-pic').src = profile.profile_picture_url || 'https://placehold.co/80x80';
+                document.getElementById('sidebar-user-name').textContent = profile.nickname;
+                document.getElementById('sidebar-user-nickname').textContent = '@' + (profile.nickname || '');
+                document.getElementById('sidebar-user-year').textContent = profile.year_program;
+                document.getElementById('sidebar-user-id').textContent = 'ID: ' + profile.id_number;
+                document.getElementById('sidebar-user-gender').textContent = 'Gender: ' + profile.gender;
+            
+                // Logout logic
+                document.getElementById('logout-btn').onclick = async function(e) {
+                    e.preventDefault();
+                    await supabase.auth.signOut();
+                    window.location.href = 'index.html';
+                };
+            
+                // --- POSTS FEED ---
+                async function loadPosts() {
+                    let { data: posts, error } = await supabase
+                        .from('posts')
+                        .select(`
+                            id, content, created_at, user_id,
+                            profiles (
+                                nickname, profile_picture_url, year_program
+                            )
+                        `)
+                        .order('created_at', { ascending: false });
+            
+                    if (error) {
+                        document.getElementById('posts-feed').innerHTML = '<p class="text-center text-gray-500">Failed to load posts.</p>';
+                        return;
+                    }
+            
+                    if (!posts || posts.length === 0) {
+                        document.getElementById('posts-feed').innerHTML = '<p class="text-center text-gray-500">No posts yet. Be the first to post!</p>';
+                        return;
+                    }
+            
+                    document.getElementById('posts-feed').innerHTML = posts.map(post => `
+                    <div class="bg-white shadow rounded-lg p-5 group relative">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full" src="${post.profiles?.profile_picture_url || 'https://placehold.co/40x40'}" alt="${post.profiles?.nickname || 'User'}">
+                            <div class="ml-3">
+                                <span class="font-medium text-gray-900">${post.profiles?.nickname || 'Unknown'}</span>
+                                <p class="text-xs text-gray-500">${post.profiles?.year_program || ''}</p>
+                                <p class="text-xs text-gray-400">${new Date(post.created_at).toLocaleString()}</p>
+                            </div>
+                            ${
+                                post.user_id === profile.id
+                                ? `<div class="ml-auto flex space-x-2 opacity-100 group-hover:opacity-100">
+                                    <button class="edit-post-btn text-primary hover:underline" data-id="${post.id}" data-content="${encodeURIComponent(post.content)}">Edit</button>
+                                    <button class="delete-post-btn text-red-600 hover:underline" data-id="${post.id}">Delete</button>
+                                </div>`
+                                : ''
+                            }
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-gray-800">${post.content}</p>
+                        </div>
+                        <div class="mt-4 space-y-2" id="replies-for-${post.id}">
+                            <!-- Replies will be rendered here -->
+                        </div>
+                        <form class="add-reply-form mt-2 flex" data-post-id="${post.id}">
+                            <input type="text" class="flex-1 border rounded-l px-2 py-1" placeholder="Write a reply..." required>
+                            <button type="submit" class="bg-primary text-white px-4 rounded-r">Reply</button>
+                        </form>
+                    </div>
+                    `).join('');
+            
+                    // Load replies for each post
+                    for (const post of posts) {
+                        const replies = await fetchReplies(post.id);
+                        const repliesDiv = document.getElementById(`replies-for-${post.id}`);
+                        if (repliesDiv) {
+                            if (!replies || replies.length === 0) {
+                                repliesDiv.innerHTML = `<div class="text-xs text-gray-400">No replies yet.</div>`;
+                            } else {
+                                repliesDiv.innerHTML = replies.map(reply => `
+                                    <div class="flex items-start space-x-2 group">
+                                        <img src="${reply.profiles?.profile_picture_url || 'https://placehold.co/32x32'}" class="h-8 w-8 rounded-full" alt="">
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <span class="font-medium text-sm">${reply.profiles?.nickname || 'Unknown'}</span>
+                                                <span class="text-xs text-gray-400 ml-2">${new Date(reply.created_at).toLocaleString()}</span>
+                                                ${
+                                                    reply.user_id === profile.id
+                                                    ? `<button class="delete-reply-btn text-xs text-red-500 ml-2 hidden group-hover:inline" data-id="${reply.id}">Delete</button>`
+                                                    : ''
+                                                }
+                                            </div>
+                                            <div class="text-gray-700 text-sm">${reply.content}</div>
+                                        </div>
+                                    </div>
+                                `).join('');
+                            }
+                        }
+                    }
+                }
+            
+                // Initial load
+                await loadPosts();
+            
+                // Create post
+                document.getElementById('create-post-form').onsubmit = async function(e) {
+                    e.preventDefault();
+                    const content = this.querySelector('textarea').value.trim();
+                    if (!content) return;
+                    const { error } = await supabase.from('posts').insert([{
+                        content,
+                        user_id: user.id
+                    }]);
+                    if (error) {
+                        alert('Failed to create post: ' + error.message);
+                        return;
+                    }
+                    this.reset();
+                    await loadPosts();
+                };
+            
+                // Event delegation for edit/delete post and add/delete reply
+                document.addEventListener('click', async function(e) {
+                    // Edit post
+                    if (e.target.classList.contains('edit-post-btn')) {
+                        const postId = e.target.getAttribute('data-id');
+                        const initialContent = decodeURIComponent(e.target.getAttribute('data-content'));
+                        showEditPostModal(initialContent, async (newContent) => {
+                            const { error } = await supabase.from('posts').update({ content: newContent }).eq('id', postId);
+                            if (error) {
+                                alert('Failed to update post: ' + error.message);
+                                return;
+                            }
+                            await loadPosts();
+                        });
+                    }
+                    // Delete post
+                    if (e.target.classList.contains('delete-post-btn')) {
+                        if (!confirm('Delete this post?')) return;
+                        const postId = e.target.getAttribute('data-id');
+                        const { error } = await supabase.from('posts').delete().eq('id', postId);
+                        if (error) {
+                            alert('Failed to delete post: ' + error.message);
+                            return;
+                        }
+                        await loadPosts();
+                    }
+                    // Delete reply
+                    if (e.target.classList.contains('delete-reply-btn')) {
+                        if (!confirm('Delete this reply?')) return;
+                        const replyId = e.target.getAttribute('data-id');
+                        const { error } = await supabase.from('replies').delete().eq('id', replyId);
+                        if (error) {
+                            alert('Failed to delete reply: ' + error.message);
+                            return;
+                        }
+                        await loadPosts();
+                    }
+                });
+            
+                // Add reply (event delegation)
+                document.addEventListener('submit', async function(e) {
+                    if (e.target.classList.contains('add-reply-form')) {
+                        e.preventDefault();
+                        const form = e.target;
+                        const postId = form.getAttribute('data-post-id');
+                        const content = form.querySelector('input[type="text"]').value.trim();
+                        if (!content) return;
+                        const { error } = await supabase.from('replies').insert([{
+                            content,
+                            user_id: user.id,
+                            post_id: postId
+                        }]);
+                        if (error) {
+                            alert('Failed to add reply: ' + error.message);
+                            return;
+                        }
+                        form.reset();
+                        await loadPosts();
+                    }
+                });
+            }
+            
+            main();
+            </script>
+    </body>
+    </html>
