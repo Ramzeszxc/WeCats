@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeCats - Exclusive Social Platform for MSU-IIT Students</title>
+    <title>Meowks Hideout!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
     <script type="module" src="supabase.js"></script>
@@ -25,7 +25,7 @@
 <body class="bg-gray-100 font-sans flex flex-col min-h-screen">
     <div class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl w-full space-y-8 flex flex-col md:flex-row gap-8">
-            <!-- Left Side - Branding -->
+            <!-- mao ni ang text sa homepage -->
             <div class="flex-1 flex flex-col justify-center">
                 <div class="text-center md:text-left">
                     <h1 class="text-5xl font-bold text-primary mb-4">WeCats</h1>
@@ -34,11 +34,10 @@
                 </div>
             </div>
             
-            <!-- Right Side - Login Form -->
+            <!-- login and signup -->
             <div class="flex-1" x-data="{ isLogin: true }">
                 <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
                     
-                    <!-- Toggle between Login and Sign Up -->
                     <div class="flex border-b border-gray-200 mb-6">
                         <button 
                             @click="isLogin = true" 
@@ -54,7 +53,7 @@
                         </button>
                     </div>
                     
-                    <!-- Login Form -->
+                    <!-- login -->
                     <form x-show="isLogin" class="space-y-6" id="login-form">
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
@@ -80,7 +79,7 @@
                         </div>
                     </form>
                     
-                    <!-- Sign Up Button - Direct to Registration Page -->
+                    <!-- himog account -->
                     <div x-show="!isLogin" class="space-y-6">
                         <p class="text-center text-sm text-gray-600">
                             Create your WeCats account to connect with the MSU-IIT community.
@@ -105,14 +104,14 @@
     <script type="module">
         import { supabase } from './supabase.js';
         
-        // Session check: redirect if already logged in
+        // Redirection if logged in na
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
                 window.location.href = 'dashboard.html';
             }
         });
         
-        // Login form logic
+        // Kani sa login form
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('login-form');
             if (loginForm) {
@@ -121,13 +120,13 @@
                     const email = document.getElementById('email').value.trim();
                     const password = document.getElementById('password').value;
         
-                    // Check email domain
+                    // dapat @g.msuiit.edu.ph ang email
                     if (!email.endsWith('@g.msuiit.edu.ph')) {
                         alert('Please use your MSU-IIT email address (@g.msuiit.edu.ph)');
                         return;
                     }
         
-                    // Supabase Auth sign in
+                    // sa supabase auth
                     const { data, error } = await supabase.auth.signInWithPassword({
                         email,
                         password
@@ -138,14 +137,12 @@
                         return;
                     }
         
-                    // Check if email is verified
+                    // Naay verification email ang supabase so maximized ang verification before login
                     if (!data.user.email_confirmed_at) {
                         alert('Please verify your email before logging in. Check your inbox.');
                         await supabase.auth.signOut();
                         return;
                     }
-        
-                    // Success: redirect to dashboard
                     window.location.href = 'dashboard.html';
                 });
             }

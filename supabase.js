@@ -1,6 +1,3 @@
-// supabase.js
-// Supabase client setup for WeCats
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://adcsdulxwkktbcwlfmhn.supabase.co';

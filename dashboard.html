@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeCats Dashboard - MSU-IIT Student Platform</title>
+    <title>WeCats - Meowks Hideout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
     <script>
@@ -25,14 +25,14 @@
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
-                <!-- Left side - Logo and Profile -->
+                <!-- Left side, profile, logout, announcements diria-->>
 <div class="flex items-center">
     <a href="dashboard.html" class="flex-shrink-0 flex items-center">
         <span class="text-xl font-bold text-primary">WeCats</span>
     </a>
 </div>
                 
-                <!-- Middle - Search Bar -->
+                <!-- Search bar (posts or user posts ray makita or maview dili maview ang profile sa user) -->
 <div class="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
   <div class="max-w-lg w-full lg:max-w-xs relative">
     <label for="search" class="sr-only">Search</label>
@@ -44,13 +44,12 @@
       </div>
       <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" placeholder="Search posts or users" type="search" autocomplete="off">
     </div>
-    <!-- Search Results Dropdown -->
     <div id="search-results-dropdown"
       class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto max-h-60 hidden">
-      <!-- Results will be injected here -->
     </div>
   </div>
 </div>
+                
                 </div>
             </div>
         </div>
@@ -59,7 +58,7 @@
     <main class="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 sm:px-0">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column - User Info -->
+                <!-- User info daria -->
                 <div class="lg:col-span-1">
                     <div class="bg-white shadow rounded-lg mb-6">
                         <div class="p-6">
@@ -88,7 +87,7 @@
                         </div>
                     </div>
                     
-                    <!-- Announcements Box -->
+                    <!-- Diri ang announcement box -->
                     <div class="bg-white shadow rounded-lg overflow-hidden">
                         <div class="bg-primary px-4 py-3">
                             <h3 class="text-lg font-medium text-white">Announcements</h3>
@@ -105,9 +104,8 @@
                     </div>
                 </div>
                 
-                <!-- Middle and Right Columns - Posts and Feed -->
+                <!-- Diri sugod ang posts -->
                 <div class="lg:col-span-2 space-y-6">
-                    <!-- Create Post Box -->
                     <div class="bg-white shadow rounded-lg overflow-hidden">
                         <div class="p-4 border-b">
                             <h3 class="text-lg font-medium text-gray-900">Share Your Thoughts</h>
@@ -224,7 +222,7 @@
                         return;
                     }
             
-                    // Upload to Supabase Storage
+                    // upload ang pic sa supabase storage (bucket = profile-pictures)
                     const fileExt = file.name.split('.').pop();
                     const filePath = `profile-pictures/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
                     let { error: uploadError } = await supabase.storage
@@ -277,7 +275,7 @@
                 };
             }
             
-            // Fetch replies for a post
+            // replies sa posts
             async function fetchReplies(postId) {
                 const { data: replies, error } = await supabase
                     .from('replies')
@@ -372,7 +370,7 @@
         window.location.replace('index.html');
     });
             
-                // --- POSTS FEED ---
+                // posts feed here
                 async function loadPosts() {
                     let { data: posts, error } = await supabase
                         .from('posts')
@@ -455,7 +453,6 @@
                     }
                 }
             
-                // Initial load
                 await loadPosts();
             
                 // Create post
@@ -475,7 +472,7 @@
                     await loadPosts();
                 };
             
-                // Event delegation for edit/delete post and add/delete reply
+                // edit/delete post and reply (event delegation)
                 document.addEventListener('click', async function(e) {
                     // Edit post
                     if (e.target.classList.contains('edit-post-btn')) {
@@ -539,7 +536,7 @@
             
             main();
 
-// --- SEARCH FEATURE ---
+// Search functionality
 const searchInput = document.getElementById('search');
 const searchResultsDropdown = document.getElementById('search-results-dropdown');
 
@@ -551,9 +548,9 @@ function hideDropdown() {
 }
 
 if (searchInput && searchResultsDropdown) {
-  // Show dropdown on focus
+
   searchInput.addEventListener('focus', showDropdown);
-  // Hide dropdown when clicking away
+  
   document.addEventListener('click', function (e) {
     if (!searchResultsDropdown.contains(e.target) && e.target !== searchInput) {
       hideDropdown();
@@ -650,6 +647,6 @@ async function doSearch(query) {
   searchResultsDropdown.innerHTML = resultsHtml;
 }
 
-            </script>
+    </script>
     </body>
     </html>
