@@ -11,10 +11,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4a6fa5',
-                        secondary: '#ff9d00',
-                        catdark: '#2c3e50',
-                        catlight: '#f8f9fa',
+                        primary: '#841327',
+                        secondary: '#a31e23',
+                        catdark: '#2b2b2b',
+                        catlight: '#fad129',
                     }
                 }
             }
@@ -26,51 +26,31 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <!-- Left side - Logo and Profile -->
-                <div class="flex items-center">
-                    <a href="dashboard.html" class="flex-shrink-0 flex items-center">
-                        <img id="header-profile-pic" class="h-10 w-10 rounded-full" src="" alt="WeCats Logo">
-
-                        <span class="ml-2 text-xl font-bold text-primary">WeCats</span>
-                    </a>
-                    <!-- Profile Section -->
-                    <div class="ml-6 flex items-center">
-                        <div class="flex items-center">
-                            <img id="header-user-pic" class="h-8 w-8 rounded-full" src="" alt="User Profile">
-                            <span id="header-user-name" class="ml-2 text-sm font-medium text-gray-700"></span>
-                        </div>
-                        <div class="ml-4">
-                            <a href="profile.html" class="text-sm font-medium text-primary hover:text-opacity-80">
-                                Update Profile
-                            </a>
-                        </div>
-                    </div>
-                </div>
+<div class="flex items-center">
+    <a href="dashboard.html" class="flex-shrink-0 flex items-center">
+        <span class="text-xl font-bold text-primary">WeCats</span>
+    </a>
+</div>
                 
                 <!-- Middle - Search Bar -->
-                <div class="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
-                    <div class="max-w-lg w-full lg:max-w-xs relative">
-                        <label for="search" class="sr-only">Search</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" placeholder="Search users or posts" type="search">
-                        </div>
-                        
-                        <!-- Search Results Dropdown -->
-                        <div x-show="searchQuery.length > 0" @click.away="searchQuery = ''; searchResults = []" 
-                            class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto max-h-60">
-                            <div x-show="searchResults.length === 0 && searchQuery.length > 0" class="px-4 py-2 text-sm text-gray-500">
-                                Press Enter to search...
-                            </div>
-                            <template x-for="(item, index) in searchResults" :key="index">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" x-text="item"></a>
-                            </template>
-                        </div>
-                    </div>
-                </div>
+<div class="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
+  <div class="max-w-lg w-full lg:max-w-xs relative">
+    <label for="search" class="sr-only">Search</label>
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm" placeholder="Search posts or users" type="search" autocomplete="off">
+    </div>
+    <!-- Search Results Dropdown -->
+    <div id="search-results-dropdown"
+      class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto max-h-60 hidden">
+      <!-- Results will be injected here -->
+    </div>
+  </div>
+</div>
                 </div>
             </div>
         </div>
@@ -376,9 +356,6 @@
                 }
             
                 // Render user info
-                document.getElementById('header-profile-pic').src = profile.profile_picture_url || 'https://placehold.co/40x40';
-                document.getElementById('header-user-pic').src = profile.profile_picture_url || 'https://placehold.co/40x40';
-                document.getElementById('header-user-name').textContent = profile.nickname;
                 document.getElementById('sidebar-profile-pic').src = profile.profile_picture_url || 'https://placehold.co/80x80';
                 document.getElementById('sidebar-user-name').textContent = profile.nickname;
                 document.getElementById('sidebar-user-nickname').textContent = '@' + (profile.nickname || '');
@@ -387,11 +364,13 @@
                 document.getElementById('sidebar-user-gender').textContent = 'Gender: ' + profile.gender;
             
                 // Logout logic
-                document.getElementById('logout-btn').onclick = async function(e) {
-                    e.preventDefault();
-                    await supabase.auth.signOut();
-                    window.location.href = 'index.html';
-                };
+    document.getElementById('logout-btn').addEventListener('click', async function(e) {
+        e.preventDefault();
+        await supabase.auth.signOut();
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.replace('index.html');
+    });
             
                 // --- POSTS FEED ---
                 async function loadPosts() {
@@ -560,75 +539,115 @@
             
             main();
 
-            // --- SEARCH FEATURE ---
+// --- SEARCH FEATURE ---
 const searchInput = document.getElementById('search');
-const searchResultsDropdown = searchInput
-  ? searchInput.closest('div.relative').querySelector('[x-show]')
-  : null;
+const searchResultsDropdown = document.getElementById('search-results-dropdown');
 
-let searchTimeout = null;
+function showDropdown() {
+  searchResultsDropdown.classList.remove('hidden');
+}
+function hideDropdown() {
+  searchResultsDropdown.classList.add('hidden');
+}
 
 if (searchInput && searchResultsDropdown) {
-  searchInput.addEventListener('input', function () {
-    const query = searchInput.value.trim();
-    clearTimeout(searchTimeout);
-    if (query.length === 0) {
-      searchResultsDropdown.innerHTML = `
-        <div class="px-4 py-2 text-sm text-gray-500">Press Enter to search...</div>
-      `;
-      return;
+  // Show dropdown on focus
+  searchInput.addEventListener('focus', showDropdown);
+  // Hide dropdown when clicking away
+  document.addEventListener('click', function (e) {
+    if (!searchResultsDropdown.contains(e.target) && e.target !== searchInput) {
+      hideDropdown();
     }
-    // Debounce search
-    searchTimeout = setTimeout(() => doSearch(query), 300);
   });
-
-  async function doSearch(query) {
-    // Search users (profiles)
-    const { data: users, error: userError } = await supabase
-      .from('profiles')
-      .select('id, nickname, profile_picture_url')
-      .ilike('nickname', `%${query}%`);
-
-    // Search posts
-    const { data: posts, error: postError } = await supabase
-      .from('posts')
-      .select('id, content')
-      .ilike('content', `%${query}%`);
-
-    let resultsHtml = '';
-
-    if ((users && users.length > 0) || (posts && posts.length > 0)) {
-      if (users && users.length > 0) {
-        resultsHtml += `<div class="px-4 py-2 text-xs text-gray-400">Users</div>`;
-        resultsHtml += users
-          .map(
-            (u) => `
-            <a href="profile.html?user=${u.id}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-              <img src="${u.profile_picture_url || 'https://placehold.co/32x32'}" class="h-6 w-6 rounded-full mr-2" alt="">
-              ${u.nickname}
-            </a>
-          `
-          )
-          .join('');
-      }
-      if (posts && posts.length > 0) {
-        resultsHtml += `<div class="px-4 py-2 text-xs text-gray-400">Posts</div>`;
-        resultsHtml += posts
-          .map(
-            (p) => `
-            <a href="#post-${p.id}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              ${p.content.length > 50 ? p.content.slice(0, 50) + '...' : p.content}
-            </a>
-          `
-          )
-          .join('');
-      }
-    } else {
-      resultsHtml = `<div class="px-4 py-2 text-sm text-gray-500">No results found.</div>`;
+  // Search on Enter key
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      triggerSearch();
     }
+  });
+}
 
-    searchResultsDropdown.innerHTML = resultsHtml;
+function triggerSearch() {
+  const query = searchInput.value.trim();
+  if (query.length === 0) {
+    searchResultsDropdown.innerHTML = `
+      <div class="px-4 py-2 text-sm text-gray-500">Press Enter to search posts...</div>
+    `;
+    showDropdown();
+    return;
   }
+  doSearch(query);
+}
+
+async function doSearch(query) {
+  showDropdown();
+  searchResultsDropdown.innerHTML = `<div class="px-4 py-2 text-sm text-gray-400">Searching...</div>`;
+
+  // 1. Search posts by content (split query for basic fuzzy)
+  const words = query.split(/\s+/).filter(Boolean);
+  let posts = [];
+  for (const word of words) {
+    const { data: wordPosts } = await supabase
+      .from('posts')
+      .select('id, content, user_id, created_at')
+      .ilike('content', `%${word}%`);
+    if (wordPosts) posts = posts.concat(wordPosts);
+  }
+  // Remove duplicates
+  posts = posts.filter(
+    (post, index, self) => index === self.findIndex((p) => p.id === post.id)
+  );
+
+  // 2. Search for users by nickname (for user quick access)
+  const { data: users } = await supabase
+    .from('profiles')
+    .select('id, nickname')
+    .ilike('nickname', `%${query}%`);
+
+  // 3. For each matched user, get their latest post(s)
+  let userPosts = [];
+  if (users && users.length > 0) {
+    for (const user of users) {
+      const { data: latestPosts } = await supabase
+        .from('posts')
+        .select('id, content, user_id, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1); // Only latest post per user
+      if (latestPosts && latestPosts.length > 0) {
+        userPosts.push({
+          ...latestPosts[0],
+          nickname: user.nickname
+        });
+      }
+    }
+  }
+
+  // Merge and deduplicate posts
+  const allPosts = [...posts, ...userPosts].filter(
+    (post, index, self) => index === self.findIndex((p) => p.id === post.id)
+  );
+
+  // Render results
+  let resultsHtml = '';
+  if (allPosts.length > 0) {
+    resultsHtml += `<div class="px-4 py-2 text-xs text-gray-400">Posts</div>`;
+    resultsHtml += allPosts
+      .map(
+        (p) => `
+        <a href="#post-${p.id}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          ${p.nickname ? `<span class="font-bold">${p.nickname}:</span> ` : ''}
+          ${p.content.length > 50 ? p.content.slice(0, 50) + '...' : p.content}
+        </a>
+      `
+      )
+      .join('');
+  } else {
+    resultsHtml = `<div class="px-4 py-2 text-sm text-gray-500">No posts found.</div>`;
+  }
+
+  searchResultsDropdown.innerHTML = resultsHtml;
 }
 
             </script>

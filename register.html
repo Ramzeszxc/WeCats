@@ -117,49 +117,63 @@
         </div>
     </footer>
 
-    <script type="module">
-        import { supabase } from './supabase.js';
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('register-form');
-            if (form) {
-                form.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    // Get form values
-                    const nickname = document.getElementById('nickname').value.trim();
-                    const email = document.getElementById('email').value.trim();
-                    const id_number = document.getElementById('id_number').value.trim();
-                    const year_program = document.getElementById('year_program').value.trim();
-                    const password = document.getElementById('password').value;
-                    const confirmPassword = document.getElementById('confirm_password').value;
-                    const gender = document.querySelector('input[name="gender"]:checked')?.value;
-                    // Validation
-                    if (!email.endsWith('@g.msuiit.edu.ph')) {
-                        alert('Please use your MSU-IIT email address (@g.msuiit.edu.ph)');
-                        return;
-                    }
-                    if (password !== confirmPassword) {
-                        alert('Passwords do not match');
-                        return;
-                    }
-                    // Register user with Supabase Auth
-                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-                        email,
-                        password
-                    });
-                    if (signUpError) {
-                        alert(signUpError.message);
-                        return;
-                    }
-                    const user = signUpData.user;
-                    if (!user) {
-                        alert('Registration failed. Please try again.');
-                        return;
-                    }
-                    alert('Registration successful! Please check your email to verify your account before logging in.');
-                    window.location.href = 'index.html';
-                });
+<script type="module">
+import { supabase } from './supabase.js';
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('register-form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            // Get form values
+            const nickname = document.getElementById('nickname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const id_number = document.getElementById('id_number').value.trim();
+            const year_program = document.getElementById('year_program').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            // Validation
+            if (!email.endsWith('@g.msuiit.edu.ph')) {
+                alert('Please use your MSU-IIT email address (@g.msuiit.edu.ph)');
+                return;
             }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            // Register user with Supabase Auth
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password
+            });
+            if (signUpError) {
+                alert(signUpError.message);
+                return;
+            }
+            const user = signUpData.user;
+            if (!user) {
+                alert('Registration failed. Please try again.');
+                return;
+            }
+            // Insert profile data into profiles table
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([{
+                    id: user.id,
+                    nickname,
+                    id_number,
+                    year_program,
+                    gender
+                }]);
+            if (profileError) {
+                alert('Profile creation failed: ' + profileError.message);
+                return;
+            }
+            alert('Registration successful! Please check your email to verify your account before logging in.');
+            window.location.href = 'index.html';
         });
-    </script>
+    }
+});
+</script>
 </body>
 </html>
