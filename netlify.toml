@@ -1,0 +1,15 @@
+[build]
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["supabase-storage-backup.js"]
+
+# For handling scheduled functions
+[build.environment]
+  NODE_VERSION = "16"
+
+# Needed dependencies
+[functions."scheduled-backup"]
+  schedule = "0 8 * * *"
+  
