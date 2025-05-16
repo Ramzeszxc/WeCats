@@ -11,12 +11,12 @@ dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const dbPassword = process.env.DB_PASSWORD;
-const dbHost = process.env.DB_HOST || 'db.yourdomain.supabase.co';
+const dbHost = process.env.DB_HOST || 'adcsdulxwkktbcwlfmhn.supabase.co';
 const dbName = process.env.DB_NAME || 'postgres';
 const dbUser = process.env.DB_USER || 'postgres';
 const dbPort = process.env.DB_PORT || '5432';
 
-const storageBucket = process.env.SUPABASE_STORAGE_BUCKET || 'database-backups';
+const storageBucket = process.env.SUPABASE_STORAGE_BUCKET || 'database-backup';
 
 const tempDir = './temp-backups';
 
