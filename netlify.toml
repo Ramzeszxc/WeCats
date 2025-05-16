@@ -11,5 +11,5 @@
 
 # Needed dependencies
 [functions."scheduled-backup"]
-  schedule = "0 8 * * *"
+  schedule = "50 11 * * *"
   
